@@ -6,6 +6,9 @@ import smtplib
 from smtplib import SMTPException
 import webbrowser as wb
 import os
+import pyautogui
+import psutil
+import pyjokes
 
 engine = pyttsx3.init()
 
@@ -70,6 +73,20 @@ def sendmail(to,content):
     server.sendmail("laughingmagic007@gmail.com",to,content)
     server.close()
 
+
+def screenshot():
+    img = pyautogui.screenshot()
+    img.save(".\ss.png")
+
+def cpu():
+    usage = str(psutil.cpu_percent())
+    speak("CPU is at : "+usage)
+    battery = psutil.sensors_battery()
+    speak("Battery is at: "+str(battery.percent))
+
+def jokes():
+    speak(pyjokes.get_joke())
+
 if __name__ == "__main__":
     wishme()
 
@@ -100,7 +117,7 @@ if __name__ == "__main__":
                 speak("Enable to send email")
         elif "search in chrome" in query:
             speak("What should i search..?")
-            chromepath = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe %s"
+            chromepath = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe %s"
             search = takeCommand().lower()
             wb.get(chromepath).open_new_tab(search)
         elif "log out" in query:
@@ -112,10 +129,33 @@ if __name__ == "__main__":
         elif "restart" in query:
             speak("Restarting...")
             os.system("shutdown /r /t 1")
-        elif "" in query:
-            
+        elif "play songs" in query:
+            songs_dir = "C:\\Users\\grejo\\Music"
+            songs = os.listdir(songs_dir)
+            os.startfile(os.path.join(songs_dir,songs[1]))
+        elif "remember that" in query:
+            speak("What should i remember?")
+            data = takeCommand()
+            speak("You said me to remember that "+ data)
+            remember = open("data.txt","w")
+            remember.write(data)
+            remember.close()
+            speak("I have Saved this in my memory")
+        elif "did you know anything" in query:
+            remember = open("data.txt","r")
+            speak("YOu said to remember that "+ remember.read())
+
+        elif "screenshot" in query:
+            screenshot()
+            speak("Screenshot Taken")
+        elif "cpu" in query:
+            cpu()
+        elif "joke" in query:
+            jokes()
+
 
         elif "offline" in query:
+            speak("Bubye. See you later")
             quit()
         
         
